@@ -9,29 +9,29 @@ module Lolcommits
 
     def initialize
       debug 'GitInfo: attempting to read local repository'
-      g    = Git.open('.')
+      g    = Mercurial::Repository.open('/Users/didia/Documents/workspace/eventbuck-fork')
       debug 'GitInfo: reading commits logs'
-      commit = g.log.first
+      commit = g.commits.all(:limit => 1).first
       debug "GitInfo: most recent commit is '#{commit}'"
 
       self.message = commit.message.split("\n").first
-      self.sha     = commit.sha[0..10]
-      self.repo_internal_path = g.repo.path
-
-      if g.remote.url
-        self.url = remote_https_url(g.remote.url)
-        match = g.remote.url.match(GIT_URL_REGEX)
+      self.sha     = commit.hash_id[0..10]
+      self.repo_internal_path = g.path
+      debug g.paths['default']
+      if g.paths
+        self.url = remote_https_url(g.paths['default'])
+        match = self.url.match(GIT_URL_REGEX)
       end
 
       if match
         self.repo = match[1]
-      elsif !g.repo.path.empty?
-        self.repo = g.repo.path.split(File::SEPARATOR)[-2]
+      elsif !g.path.empty?
+        self.repo = g.path.split(File::SEPARATOR)[-2]
       end
 
       if commit.author
-        self.author_name = commit.author.name
-        self.author_email = commit.author.email
+        self.author_name = commit.author
+        self.author_email = commit.author_email
       end
 
       debug 'GitInfo: parsed the following values from commit:'
@@ -46,7 +46,8 @@ module Lolcommits
     private
 
     def remote_https_url(url)
-      url.gsub(':', '/').gsub(/^git@/, 'https://').gsub(/\.git$/, '') + '/commit/'
+      url.gsub(':', '/').gsub(/^hg@/, 'https://').gsub(/\.hg$/, '') + '/commit/'
     end
   end
 end
+

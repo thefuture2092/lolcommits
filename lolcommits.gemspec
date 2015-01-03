@@ -3,7 +3,7 @@ $:.push File.expand_path("../lib", __FILE__)
 require "lolcommits/version"
 
 Gem::Specification.new do |s|
-  s.name        = 'lolcommits'
+  s.name        = 'lolcommits-hg'
   s.version     = Lolcommits::VERSION
   s.authors     = ['Matthew Rothenberg',    'Matt Hutchinson']
   s.email       = ['mrothenberg@gmail.com', 'matt@hiddenloop.com']
@@ -34,6 +34,7 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency('httparty', '~> 0.11.0')   # ~> 0.13+ requires Ruby >= 1.9.3
 
   # core
+  s.add_runtime_dependency('mercurial-ruby', '~> 0.7.12')
   s.add_runtime_dependency('git', '~> 1.2.8')
   s.add_runtime_dependency('choice', '~> 0.1.6')
   s.add_runtime_dependency('launchy', '~> 2.4.3')
