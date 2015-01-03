@@ -9,7 +9,7 @@ module Lolcommits
 
     def initialize
       debug 'GitInfo: attempting to read local repository'
-      g    = Mercurial::Repository.open('/Users/didia/Documents/workspace/eventbuck-fork')
+      g    = Mercurial::Repository.open '.'
       debug 'GitInfo: reading commits logs'
       commit = g.commits.all(:limit => 1).first
       debug "GitInfo: most recent commit is '#{commit}'"
@@ -17,9 +17,9 @@ module Lolcommits
       self.message = commit.message.split("\n").first
       self.sha     = commit.hash_id[0..10]
       self.repo_internal_path = g.path
-      debug g.paths['default']
-      if g.paths
-        self.url = remote_https_url(g.paths['default'])
+    
+      if !g.paths.empty?
+        self.url = remote_https_url(g.paths.values[0])
         match = self.url.match(GIT_URL_REGEX)
       end
 
